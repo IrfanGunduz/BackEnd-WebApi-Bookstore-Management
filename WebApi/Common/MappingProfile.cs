@@ -10,6 +10,7 @@ using WebApi.BookOperations.GetBookDetail;
 using WebApi.BookOperations.GetBooks;
 using WebApi.BookOperations.UpdateBook;
 using WebApi.Entities;
+using WebApi.UserOperations.Commands.CreateUser;
 
 namespace WebApi.Common{
 
@@ -27,6 +28,7 @@ namespace WebApi.Common{
             CreateMap<UpdateAuthorModel, Author>().ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null && !srcMember.Equals(default)));
             CreateMap<Author, AuthorDetailViewModel>();
             CreateMap<Author, AuthorsViewModel>();
+            CreateMap<CreateUserModel, User>();
 
 
         }
