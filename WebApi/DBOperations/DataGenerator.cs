@@ -4,79 +4,98 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi.Entities;
 
-namespace WebApi.DBOperations{
+// NOTE: Sadece InMemory için örnek seed datası. Production'da kullanılmaz.
+ // Bu dosya yalnızca InMemory DB için başlangıç verisi sağlıyordu.
+// Şu anda kullanılmamaktadır. Arşiv amaçlı tutuluyor.
 
-    public class DataGenerator{
 
-        public static void Initilize(IServiceProvider serviceProvider){
-            using (var context = new BookStoreDbContext(serviceProvider.GetRequiredService<DbContextOptions<BookStoreDbContext>>())){
-                if(context.Books.Any()){
+namespace WebApi.DBOperations
+{
+
+    public class DataGenerator
+    {
+
+        public static void Initilize(IServiceProvider serviceProvider)
+        {
+            using (var context = new BookStoreDbContext(serviceProvider.GetRequiredService<DbContextOptions<BookStoreDbContext>>()))
+            {
+                if (context.Books.Any())
+                {
                     return;
                 }
                 context.Genres.AddRange(
-                    new Genre{
+                    new Genre
+                    {
                         Name = "Personal Growth"
                     },
-                    new Genre{
+                    new Genre
+                    {
                         Name = "Science Fiction"
                     },
-                    new Genre{
+                    new Genre
+                    {
                         Name = "Romance"
                     }
 
                 );
                 context.Books.AddRange(
-                    new Book{
+                    new Book
+                    {
                         // Id = 1,
-                        Title="Lean Startup",
+                        Title = "Lean Startup",
                         GenreId = 1,
-                        AuthorId = 1, 
+                        AuthorId = 1,
                         PageCount = 200,
-                        PublishDate = new DateTime(2001,06,12)
+                        PublishDate = new DateTime(2001, 06, 12)
                     },
-                        new Book{
-                        // Id = 2,
-                        Title="Herland",
-                        GenreId = 2,
-                        AuthorId = 2,
-                        PageCount = 250,
-                        PublishDate = new DateTime(2010,05,23)
-                    },
-                        new Book{
-                        // Id = 3,
-                        Title="Dune",
-                        GenreId = 2,
-                        AuthorId = 3, 
-                        PageCount = 540,
-                        PublishDate = new DateTime(2001,12,21)
-                    });
-                    context.Authors.AddRange(
-                        new Author{
+                        new Book
+                        {
+                            // Id = 2,
+                            Title = "Herland",
+                            GenreId = 2,
+                            AuthorId = 2,
+                            PageCount = 250,
+                            PublishDate = new DateTime(2010, 05, 23)
+                        },
+                        new Book
+                        {
+                            // Id = 3,
+                            Title = "Dune",
+                            GenreId = 2,
+                            AuthorId = 3,
+                            PageCount = 540,
+                            PublishDate = new DateTime(2001, 12, 21)
+                        });
+                context.Authors.AddRange(
+                    new Author
+                    {
                         // Id = 1,
-                        Id=1,
-                        Name = "Arthur", 
+                        Id = 1,
+                        Name = "Arthur",
                         Surname = "Morgan",
-                        BirthDate = new DateTime(1863,06,12)
+                        BirthDate = new DateTime(1863, 06, 12)
                     },
-                        new Author{
+                    new Author
+                    {
                         // Id = 2,
-                        Id=2,
-                        Name = "John", 
+                        Id = 2,
+                        Name = "John",
                         Surname = "Marston",
-                        BirthDate = new DateTime(1873,05,23)
+                        BirthDate = new DateTime(1873, 05, 23)
                     },
-                        new Author{
+                    new Author
+                    {
                         // Id = 3,
-                        Id=3,
-                        Name = "Dutch", 
+                        Id = 3,
+                        Name = "Dutch",
                         Surname = "Van Der Linde",
-                        BirthDate = new DateTime(1855,12,21)
+                        BirthDate = new DateTime(1855, 12, 21)
                     });
 
 
-                    context.SaveChanges();
-                }
+                context.SaveChanges();
             }
         }
     }
+}
 

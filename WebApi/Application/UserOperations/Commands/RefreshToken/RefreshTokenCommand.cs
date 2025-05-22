@@ -22,7 +22,7 @@ namespace WebApi.UserOperations.Commands.RefreshToken{
             var user = _dbContext.Users.FirstOrDefault(x=> x.RefreshToken == RefreshToken && x.RefreshTokenExpireDate > DateTime.Now);
             if(user !=null){
                 //Token Yarat
-                TokenHandler handler = new TokenHandler(_configuration);
+                TokenHandler handler = new TokenHandler(_configuration, _dbContext);
                 Token token = handler.CreateAccessToken(user);
 
                 user.RefreshToken = token.RefreshToken;

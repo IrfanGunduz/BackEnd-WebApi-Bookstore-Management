@@ -24,7 +24,7 @@ namespace WebApi.Controllers{
             _context = context;
             _mapper = mapper;
         }
-
+        
         [HttpGet]
         public ActionResult GetAuthors(){
             GetAuthorsQuery query = new GetAuthorsQuery(_context, _mapper);

@@ -14,7 +14,7 @@ namespace WebApi.Entities{
         public string Surname { get; set; }
 
         public DateTime BirthDate {get; set;}
-        public int BookId {get; set;}
+        //public int BookId {get; set;}
         public ICollection<Book> Books {get; set;}
 
 

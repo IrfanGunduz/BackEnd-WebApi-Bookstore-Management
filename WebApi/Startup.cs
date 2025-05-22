@@ -21,6 +21,7 @@ using WebApi.DBOperations;
 using WebApi.Middlewares;
 using WebApi.Services;
 
+
 namespace WebApi
 {
     public class Startup
@@ -36,23 +37,61 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
-            { 
+            {
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
-                ValidateAudience = true,
-                ValidateIssuer = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = Configuration["Token:Issuer"],
-                ValidAudience = Configuration["Token:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SecurityKey"])),
-                ClockSkew = TimeSpan.Zero
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Token:Issuer"],
+                    ValidAudience = Configuration["Token:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SecurityKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                opt.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token süresi doldu", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
+                        // 🔐 JWT Tanımı
+                     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                            {
+                                In = ParameterLocation.Header,
+                                Description = "JWT token'ı girin. ",
+                                Name = "Authorization",
+                                Type = SecuritySchemeType.Http,
+                                Scheme = "Bearer",
+                                BearerFormat = "JWT"
+                            });
+
+                            // 🛡️ Swagger'da her endpoint'e token kullanımı zorunluluğu
+                            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                            {
+                                {
+                                    new OpenApiSecurityScheme
+                                    {
+                                        Reference = new OpenApiReference
+                                        {
+                                            Type = ReferenceType.SecurityScheme,
+                                            Id = "Bearer"
+                                        }
+                                    },
+                                    new string[] {}
+                                }
+                            });
             });
 
             //services.AddDbContext<BookStoreDbContext>(options=> options.UseInMemoryDatabase(databaseName: "BookStoreDB"));

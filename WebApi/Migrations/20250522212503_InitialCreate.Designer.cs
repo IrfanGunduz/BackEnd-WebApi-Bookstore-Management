@@ -10,7 +10,7 @@ using WebApi.DBOperations;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    [Migration("20250520205218_InitialCreate")]
+    [Migration("20250522212503_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,6 @@ namespace WebApi.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -43,6 +40,29 @@ namespace WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BirthDate = new DateTime(1863, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Arthur",
+                            Surname = "Morgan"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BirthDate = new DateTime(1873, 5, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "John",
+                            Surname = "Marston"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BirthDate = new DateTime(1855, 12, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Dutch",
+                            Surname = "Van Der Linde"
+                        });
                 });
 
             modelBuilder.Entity("WebApi.Entities.Book", b =>
@@ -55,7 +75,7 @@ namespace WebApi.Migrations
                     b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("GenreId")
+                    b.Property<int?>("GenreId")
                         .HasColumnType("integer");
 
                     b.Property<int>("PageCount")
@@ -74,6 +94,35 @@ namespace WebApi.Migrations
                     b.HasIndex("GenreId");
 
                     b.ToTable("Books");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = 1,
+                            GenreId = 1,
+                            PageCount = 200,
+                            PublishDate = new DateTime(2001, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Lean Startup"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AuthorId = 2,
+                            GenreId = 2,
+                            PageCount = 250,
+                            PublishDate = new DateTime(2010, 5, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Herland"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AuthorId = 3,
+                            GenreId = 3,
+                            PageCount = 540,
+                            PublishDate = new DateTime(2001, 12, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Dune"
+                        });
                 });
 
             modelBuilder.Entity("WebApi.Entities.Genre", b =>
@@ -92,6 +141,26 @@ namespace WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsActive = true,
+                            Name = "Personal Growth"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsActive = true,
+                            Name = "Science Fiction"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsActive = true,
+                            Name = "Romance"
+                        });
                 });
 
             modelBuilder.Entity("WebApi.Entities.User", b =>
@@ -128,13 +197,13 @@ namespace WebApi.Migrations
                 {
                     b.HasOne("WebApi.Entities.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WebApi.Entities.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Author");
 

@@ -24,7 +24,7 @@ namespace WebApi.UserOperations.Commands.CreateToken{
             var user = _dbContext.Users.FirstOrDefault(x=> x.Email == Model.Email && x.Password == Model.Password);
             if(user !=null){
                 //Token Yarat
-                TokenHandler handler = new TokenHandler(_configuration);
+                TokenHandler handler = new TokenHandler(_configuration, _dbContext);
                 Token token = handler.CreateAccessToken(user);
 
                 user.RefreshToken = token.RefreshToken;
